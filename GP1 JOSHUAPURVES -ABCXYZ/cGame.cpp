@@ -223,7 +223,7 @@ void cGame::update(double deltaTime)
 
 				(*letterIterator)->setActive(false);
 				(*ballIterartor)->setActive(false);
-				theSoundMgr->getSnd("explosion")->play(0);
+				theSoundMgr->getSnd("destroy")->play(0);
 			}
 		}
 	}
@@ -315,7 +315,7 @@ bool cGame::getInput(bool theLoop)
 					theball[numBullets]->setActive(true);
 					cout << "Ball added to Vector at position - x: " << thePencil.getBoundingRect().x << " y: " << thePencil.getBoundingRect().y << endl;
 				}
-				theSoundMgr->getSnd("shot")->play(0);
+				theSoundMgr->getSnd("fire")->play(0);
 				break;
 				default:
 					break;
