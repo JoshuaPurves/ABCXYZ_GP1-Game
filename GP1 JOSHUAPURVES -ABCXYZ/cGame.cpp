@@ -43,16 +43,16 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	// Clear the buffer with a black background
 	SDL_SetRenderDrawColor(theRenderer, 0, 0, 0, 255);
 	SDL_RenderPresent(theRenderer);
-	
+
 	theTextureMgr->setRenderer(theRenderer);
 	theFontMgr->initFontLib();
 	theSoundMgr->initMixer();
 
 	// Store the textures
-	textureName = { "x square", "y square", "z square", "ball","thePencil" ,"theBackground"};
-	texturesToUse = { "Images\\x square.png", "Images\\y square.png", "Images\\z square.png", "Images\\ball.png", "Images\\shooter game.png", "Images\\background.png"};
+	textureName = { "x square", "y square", "z square", "ball","thePencil" ,"theBackground" };
+	texturesToUse = { "Images\\x square.png", "Images\\y square.png", "Images\\z square.png", "Images\\ball.png", "Images\\shooter game.png", "Images\\background.png" };
 	for (int tCount = 0; tCount < textureName.size(); tCount++)
-	{	
+	{
 		theTextureMgr->addTexture(textureName[tCount], texturesToUse[tCount]);
 	}
 	// Create textures for Game Dialogue (text)
@@ -62,8 +62,8 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 36);
 	}
-	gameTextList = { "ABCXYZ - The Game", "The Score: 0"};
-	
+	gameTextList = { "ABCXYZ - The Game", "The Score: 0" };
+
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 
@@ -85,22 +85,34 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	thePencil.setSpritePos({ 400, 650 });
 	thePencil.setTexture(theTextureMgr->getTexture("thePencil"));
 	thePencil.setSpriteDimensions(theTextureMgr->getTexture("thePencil")->getTWidth(), theTextureMgr->getTexture("thePencil")->getTHeight());
-	FPoint scale = { 0.5, 0.5 };
+	FPoint scale = { 1, 1 };
 	thePencil.setPencilVelocity({ 0, 0 });
 
 	// Create vector array of textures
-
+	
+	//int someArray[4][10];
+	//for(int y=0;y< 10; y++)
+	//{
+		//for (int x = 0; x < 4, x++)
+		//{
+			//someArray[x][y] = randletter;
+		//}
 	for (int ltr = 0; ltr < 10; ltr++)
 	{
+
 		theLetters.push_back(new cLetter);
-		theLetters[ltr]->setSpritePos({ 100 * (rand() % 5 + 1), 50 * (rand() % 5 + 1) });
-		theLetters[ltr]->setSpriteTranslation({ 5, 5 });
-		int randLetter= rand() % 4;
+		theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
+		theLetters[ltr]->setSpriteTranslation({ 10, 59 });
+		int randLetter = rand() % 3;
 		theLetters[ltr]->setTexture(theTextureMgr->getTexture(textureName[randLetter]));
 		theLetters[ltr]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randLetter])->getTWidth(), theTextureMgr->getTexture(textureName[randLetter])->getTHeight());
-		theLetters[ltr]->setLetterVelocity({ 3, 3 });
+		theLetters[ltr]->setLetterVelocity({ 1, 1 });
 		theLetters[ltr]->setActive(true);
+
+
+
 	}
+
 
 }
 
@@ -214,7 +226,7 @@ void cGame::update(double deltaTime)
 				// if a collision set the bullet and asteroid to false
 
 				score += 5;
-				theTextureMgr->deleteTexture("Score");
+				theTextureMgr->deleteTexture("score");
 
 				string thescore = to_string(score);
 				ScoreAsString = "score: " + thescore;
@@ -307,7 +319,7 @@ bool cGame::getInput(bool theLoop)
 					theball.push_back(new cBall);
 					int numBullets = theball.size() - 1;
 					theball[numBullets]->setSpritePos({ thePencil.getBoundingRect().x + thePencil.getSpriteCentre().x, thePencil.getBoundingRect().y + thePencil.getSpriteCentre().y });
-					theball[numBullets]->setSpriteTranslation({ 1, 1 });
+					theball[numBullets]->setSpriteTranslation({ 2, 2 });
 					theball[numBullets]->setTexture(theTextureMgr->getTexture("ball"));
 					theball[numBullets]->setSpriteDimensions(theTextureMgr->getTexture("ball")->getTWidth(), theTextureMgr->getTexture("ball")->getTHeight());
 					theball[numBullets]->setBallVelocity({ 2, 2 });

@@ -24,7 +24,7 @@ Update the sprite position
 void cPencil::update(double deltaTime)
 {
 
-	FPoint direction = { 0.0f, 0.0f };
+	FPoint direction = { 0, 0 };
 	direction.X = (sin(this->getSpriteRotAngle()*PI / 180));
 	direction.Y = -(cos(this->getSpriteRotAngle()*PI / 180));
 

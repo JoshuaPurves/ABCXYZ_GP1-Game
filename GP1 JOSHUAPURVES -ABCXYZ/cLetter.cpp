@@ -24,10 +24,10 @@ Update the sprite position
 void cLetter::update(double deltaTime)
 {
 
-	this->setSpriteRotAngle(this->getSpriteRotAngle() +(5.0f * deltaTime)); 
-	if (this->getSpriteRotAngle() > 360)
+	this->setSpriteRotAngle(this->getSpriteRotAngle() +(0 * deltaTime)); 
+	if (this->getSpriteRotAngle() > 0)
 	{
-		this->setSpriteRotAngle(this->getSpriteRotAngle() -360);
+		this->setSpriteRotAngle(this->getSpriteRotAngle() -0);
 	}
 
 	SDL_Rect currentSpritePos = this->getSpritePos();
