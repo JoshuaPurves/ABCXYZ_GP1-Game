@@ -138,6 +138,8 @@ xcopy /Y "C:\Users\Graham Purve\Desktop\SDL2\SDL2_ttf-2.0.14\lib\x86\*.dll" "$(O
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="abcxyzGame.h" />
+    <ClInclude Include="cButton.h" />
+    <ClInclude Include="cButtonMgr.h" />
     <ClInclude Include="cletter.h" />
     <ClInclude Include="cBkGround.h" />
     <ClInclude Include="cBall.h" />
@@ -155,6 +157,8 @@ xcopy /Y "C:\Users\Graham Purve\Desktop\SDL2\SDL2_ttf-2.0.14\lib\x86\*.dll" "$(O
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ABCXYZSDL.cpp" />
+    <ClCompile Include="cButton.cpp" />
+    <ClCompile Include="cButtonMgr.cpp" />
     <ClCompile Include="cLetter.cpp" />
     <ClCompile Include="cBkGround.cpp" />
     <ClCompile Include="cBall.cpp" />
@@ -168,6 +172,9 @@ xcopy /Y "C:\Users\Graham Purve\Desktop\SDL2\SDL2_ttf-2.0.14\lib\x86\*.dll" "$(O
     <ClCompile Include="cSprite.cpp" />
     <ClCompile Include="cTexture.cpp" />
     <ClCompile Include="cTextureMgr.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Images\ball.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

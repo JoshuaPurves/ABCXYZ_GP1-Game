@@ -40,6 +40,8 @@ typedef struct
 	float  Y;
 }FPoint;
 
-enum textType {SOLID, BLENDED, SHADED};
-enum soundType {SFX, MUSIC};
+enum textType { SOLID, BLENDED, SHADED };
+enum soundType { SFX, MUSIC };
+enum gameState { MENU, INSTRUCTIONS, CREATEMAZE, PLAYING, END, QUIT };
+enum btnTypes { EXIT, INSTRUCT, LOAD, PLAY, SAVE, SETTINGS };
 #endif
