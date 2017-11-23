@@ -67,7 +67,10 @@ private:
 	int renderWidth, renderHeight;
 	int score;
 	string ScoreAsString;
+	string TimeAsString;
 	bool scoreChanged;
+	bool timecount;
+	int time;
 	// Create vector array of button textures
 	vector<LPCSTR> btnNameList;
 	vector<LPCSTR> btnTexturesToUse;

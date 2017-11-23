@@ -78,18 +78,19 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theGameState = MENU;
 	theBtnType = EXIT;
 	// Create textures for Game Dialogue (text)
-	fontList = { "digital", "bbe" , };
-	fontsToUse = { "Fonts/digital-7.ttf", "Fonts/Behind Blue Eyes.ttf" };
+	fontList = { "point", "bbe" , };
+	fontsToUse = { "Fonts/score.ttf", "Fonts/Behind Blue Eyes.ttf" };
 	for (int fonts = 0; fonts < fontList.size(); fonts++)
 	{
 		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 38);
 	}
-	gameTextList = { "ABCXYZ - The Game", "The Score: 0" , "GAME OVER" };
+	gameTextList = { "ABCXYZ - The Game", "The Score: 0" , "GAME OVER", "Time Left: 0" };
 
-	theTextureMgr->addTexture("Title", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
-	theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
-	theTextureMgr->addTexture("gameover", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[2], SOLID, { 0, 0, 255, 0}, { 0, 0, 0, 0 }));
-
+	theTextureMgr->addTexture("Title", theFontMgr->getFont("point")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
+	theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
+	theTextureMgr->addTexture("gameover", theFontMgr->getFont("point")->createTextTexture(theRenderer, gameTextList[2], SOLID, { 0, 0, 255, 0}, { 0, 0, 0, 0 }));
+	theTextureMgr->addTexture("time", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
+	
 		for (int ltr = 0; ltr < 10; ltr++)
 		{
 				theLetters.push_back(new cLetter);
@@ -169,7 +170,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		thePencil.setPencilVelocity({ 1, 1 });
 		spriteBkgd.setSpritePos({ 0, 0 });
 		cTexture* tempTextTexture = theTextureMgr->getTexture("Title");
-		SDL_Rect pos = { 350, 0, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		SDL_Rect pos = { 285, 0, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		scale = { 1, 1 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 
@@ -178,11 +179,22 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		if (scoreChanged)
 		{
 			gameTextList[1] = ScoreAsString.c_str();
-			theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
+			theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 			scoreChanged = false;
 		}
 		tempTextTexture = theTextureMgr->getTexture("score");
-		pos = { 400, 25, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		pos = { 150, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		scale = { 1, 1 };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+
+		if (timecount)
+		{
+			gameTextList[3] = TimeAsString.c_str();
+			theTextureMgr->addTexture("time", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
+		}
+
+		tempTextTexture = theTextureMgr->getTexture("time");
+		pos = { 700, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		scale = { 1, 1 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 
@@ -201,15 +213,15 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		if (scoreChanged)
 		{
 			gameTextList[1] = ScoreAsString.c_str();
-			theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
+			theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 			scoreChanged = false;
 		}
 		tempTextTexture = theTextureMgr->getTexture("score");
-		pos = { 425, 300, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		pos = { 425, 350, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		scale = { 1, 1 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 		tempTextTexture = theTextureMgr->getTexture("gameover");
-		pos = { 425, 200, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		pos = { 378, 200, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		scale = { 60, 60 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 
@@ -245,7 +257,7 @@ void cGame::update()
 
 void cGame::update(double deltaTime)
 {
-	// CHeck Button clicked and change state
+	// Check Button clicked and change state
 	if (theGameState == MENU || theGameState == END)
 	{
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
@@ -258,6 +270,22 @@ void cGame::update(double deltaTime)
 	theGameState = theButtonMgr->getBtn("replay_btn")->update(theGameState, PLAYING, theAreaClicked);
 	
 	{
+		if (theGameState == PLAYING)
+		{
+			time = 75;
+			time-- ;
+			theTextureMgr->deleteTexture("time");
+			
+			string thetime = to_string(time);
+			TimeAsString = "Time Left: " + thetime;
+
+			timecount = true;
+		}
+
+		if (time = 0)
+		{
+			theGameState == END;
+		}
 		// Update the visibility and position of each letter
 		vector<cLetter*>::iterator letterIterator = theLetters.begin();
 		while (letterIterator != theLetters.end())
@@ -305,7 +333,7 @@ void cGame::update(double deltaTime)
 					theTextureMgr->deleteTexture("score");
 
 					string thescore = to_string(score);
-					ScoreAsString = "score: " + thescore;
+					ScoreAsString = "Score: " + thescore;
 
 					scoreChanged = true;
 
@@ -390,7 +418,7 @@ bool cGame::getInput(bool theLoop)
 			break;
 			case SDLK_RIGHT:
 			{
-					thePencil.setPencilVelocity({ 5, 0 });
+				thePencil.setPencilVelocity({ 5, 0 });
 			}
 			break;
 			case SDLK_d:
