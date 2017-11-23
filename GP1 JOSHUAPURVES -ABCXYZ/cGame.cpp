@@ -78,20 +78,20 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theGameState = MENU;
 	theBtnType = EXIT;
 	// Create textures for Game Dialogue (text)
-	fontList = { "digital", "bbe" };
+	fontList = { "digital", "bbe" , };
 	fontsToUse = { "Fonts/digital-7.ttf", "Fonts/Behind Blue Eyes.ttf" };
 	for (int fonts = 0; fonts < fontList.size(); fonts++)
 	{
-		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 36);
+		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 38);
 	}
-	gameTextList = { "ABCXYZ - The Game", "The Score: 0" };
+	gameTextList = { "ABCXYZ - The Game", "The Score: 0" , "GAME OVER" };
 
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
+	theTextureMgr->addTexture("gameover", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[2], SOLID, { 0, 0, 255, 0}, { 0, 0, 0, 0 }));
 
 		for (int ltr = 0; ltr < 10; ltr++)
 		{
-
 				theLetters.push_back(new cLetter);
 				theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
 			theLetters[ltr]->setSpriteTranslation({ 10, 59 });
@@ -176,7 +176,6 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		//render score
 
 		if (scoreChanged)
-
 		{
 			gameTextList[1] = ScoreAsString.c_str();
 			theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
@@ -198,6 +197,22 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	case END:
 	{
 		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
+
+		if (scoreChanged)
+		{
+			gameTextList[1] = ScoreAsString.c_str();
+			theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
+			scoreChanged = false;
+		}
+		tempTextTexture = theTextureMgr->getTexture("score");
+		pos = { 425, 300, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		scale = { 1, 1 };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+		tempTextTexture = theTextureMgr->getTexture("gameover");
+		pos = { 425, 200, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		scale = { 60, 60 };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+
 		spriteBkgd.setSpritePos({ 0, 0 });
 		spriteBkgd.setTexture(theTextureMgr->getTexture("theEnd"));
 		spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("theEnd")->getTWidth(), theTextureMgr->getTexture("theEnd")->getTHeight());
