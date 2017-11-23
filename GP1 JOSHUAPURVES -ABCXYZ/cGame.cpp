@@ -89,19 +89,18 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 
-	for (int ltr = 0; ltr < 10; ltr++)
-{
+		for (int ltr = 0; ltr < 10; ltr++)
+		{
 
-	theLetters.push_back(new cLetter);
-	theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
-	theLetters[ltr]->setSpriteTranslation({ 10, 59 });
-	int randLetter = rand() % 3;
-	theLetters[ltr]->setTexture(theTextureMgr->getTexture(textureName[randLetter]));
-	theLetters[ltr]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randLetter])->getTWidth(), theTextureMgr->getTexture(textureName[randLetter])->getTHeight());
-	theLetters[ltr]->setLetterVelocity({ 1, 1 });
-	theLetters[ltr]->setActive(true);
-
-}
+				theLetters.push_back(new cLetter);
+				theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
+			theLetters[ltr]->setSpriteTranslation({ 10, 59 });
+			int randLetter = rand() % 3;
+				theLetters[ltr]->setTexture(theTextureMgr->getTexture(textureName[randLetter]));
+				theLetters[ltr]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randLetter])->getTWidth(), theTextureMgr->getTexture(textureName[randLetter])->getTHeight());
+				theLetters[ltr]->setLetterVelocity({ 1, 1 });
+				theLetters[ltr]->setActive(true);
+			}
 	// Load game sounds
 	soundList = { "theme"};
 	soundTypes = { MUSIC, SFX };
@@ -116,6 +115,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	spriteBkgd.setSpritePos({ 0, 0 });
 	spriteBkgd.setTexture(theTextureMgr->getTexture("theBackground"));
 	spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("theBackground")->getTWidth(), theTextureMgr->getTexture("theBackground")->getTHeight());
+
 
 }
 
@@ -152,6 +152,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	case PLAYING:
 	{
 		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
+
 		for (int draw = 0; draw < theLetters.size(); draw++)
 		{
 			theLetters[draw]->render(theRenderer, &theLetters[draw]->getSpriteDimensions(), &theLetters[draw]->getSpritePos(), theLetters[draw]->getSpriteRotAngle(), &theLetters[draw]->getSpriteCentre(), theLetters[draw]->getSpriteScale());
@@ -161,11 +162,11 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		{
 			theball[draw]->render(theRenderer, &theball[draw]->getSpriteDimensions(), &theball[draw]->getSpritePos(), theball[draw]->getSpriteRotAngle(), &theball[draw]->getSpriteCentre(), theball[draw]->getSpriteScale());
 		}
-		thePencil.setSpritePos({ 400, 650 });
+		thePencil.setSpritePos({ 400, 650});
 		thePencil.setTexture(theTextureMgr->getTexture("thePencil"));
 		thePencil.setSpriteDimensions(theTextureMgr->getTexture("thePencil")->getTWidth(), theTextureMgr->getTexture("thePencil")->getTHeight());
-		FPoint scale = { 1, 1 };
-		thePencil.setPencilVelocity({ 0, 0 });
+		FPoint scale = { 0, 0 };
+		thePencil.setPencilVelocity({ 1, 1 });
 		spriteBkgd.setSpritePos({ 0, 0 });
 		cTexture* tempTextTexture = theTextureMgr->getTexture("Title");
 		SDL_Rect pos = { 350, 0, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
@@ -219,7 +220,6 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 
 void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer, double rotAngle, SDL_Point* spriteCentre)
 {
-
 	SDL_RenderPresent(theRenderer);
 }
 
@@ -243,7 +243,7 @@ void cGame::update(double deltaTime)
 	theGameState = theButtonMgr->getBtn("replay_btn")->update(theGameState, PLAYING, theAreaClicked);
 	
 	{
-		// Update the visibility and position of each asteriod
+		// Update the visibility and position of each letter
 		vector<cLetter*>::iterator letterIterator = theLetters.begin();
 		while (letterIterator != theLetters.end())
 		{
@@ -370,12 +370,12 @@ bool cGame::getInput(bool theLoop)
 			break;
 			case SDLK_LEFT:
 			{
-				thePencil.setPencilVelocity({ -90, 0 });
+				thePencil.setPencilVelocity({ -5, 0 });
 			}
 			break;
 			case SDLK_RIGHT:
 			{
-				thePencil.setPencilVelocity({ +120, 0 });
+					thePencil.setPencilVelocity({ 5, 0 });
 			}
 			break;
 			case SDLK_d:
