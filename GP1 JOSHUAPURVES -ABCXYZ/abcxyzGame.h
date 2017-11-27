@@ -12,5 +12,8 @@
 #include "cPencil.h"
 #include "cFontMgr.h"
 #include "cSoundMgr.h"
+#include "cFileSave.h"
+#include "cFileHandler.h"
+#include "cTimer.h"
 
 #endif

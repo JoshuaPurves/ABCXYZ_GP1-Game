@@ -40,6 +40,7 @@ private:
 	time_point< high_resolution_clock > m_CurrentTime;
 	duration< double > deltaTime;
 	bool loop;
+	Timer* theTimer;
 
 	// Sprites for displaying background and rocket textures
 	cSprite spriteBkgd;
@@ -85,6 +86,8 @@ private:
 	SDL_Color aColour;
 	cTexture* tempTextTexture;
 	SDL_Point theAreaClicked;
+	bool fileAvailable;
+
 };
 
 #endif

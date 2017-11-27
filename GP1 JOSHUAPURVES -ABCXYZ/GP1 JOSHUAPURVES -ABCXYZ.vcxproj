@@ -140,6 +140,7 @@ xcopy /Y "C:\Users\Graham Purve\Desktop\SDL2\SDL2_ttf-2.0.14\lib\x86\*.dll" "$(O
     <ClInclude Include="abcxyzGame.h" />
     <ClInclude Include="cButton.h" />
     <ClInclude Include="cButtonMgr.h" />
+    <ClInclude Include="cFileHandler.h" />
     <ClInclude Include="cletter.h" />
     <ClInclude Include="cBkGround.h" />
     <ClInclude Include="cBall.h" />
@@ -153,12 +154,15 @@ xcopy /Y "C:\Users\Graham Purve\Desktop\SDL2\SDL2_ttf-2.0.14\lib\x86\*.dll" "$(O
     <ClInclude Include="cSprite.h" />
     <ClInclude Include="cTexture.h" />
     <ClInclude Include="cTextureMgr.h" />
+    <ClInclude Include="cFileSave.h" />
+    <ClInclude Include="cTimer.h" />
     <ClInclude Include="GameConstants.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ABCXYZSDL.cpp" />
     <ClCompile Include="cButton.cpp" />
     <ClCompile Include="cButtonMgr.cpp" />
+    <ClCompile Include="cFileHandler.cpp" />
     <ClCompile Include="cLetter.cpp" />
     <ClCompile Include="cBkGround.cpp" />
     <ClCompile Include="cBall.cpp" />
@@ -172,6 +176,7 @@ xcopy /Y "C:\Users\Graham Purve\Desktop\SDL2\SDL2_ttf-2.0.14\lib\x86\*.dll" "$(O
     <ClCompile Include="cSprite.cpp" />
     <ClCompile Include="cTexture.cpp" />
     <ClCompile Include="cTextureMgr.cpp" />
+    <ClCompile Include="cTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Images\ball.png" />
