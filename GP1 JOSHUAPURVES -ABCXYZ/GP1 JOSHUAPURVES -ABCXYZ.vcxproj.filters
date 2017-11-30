@@ -72,9 +72,6 @@
     <ClInclude Include="cFileSave.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cTimer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cBkGround.cpp">
@@ -126,9 +123,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="cFileHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="cTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

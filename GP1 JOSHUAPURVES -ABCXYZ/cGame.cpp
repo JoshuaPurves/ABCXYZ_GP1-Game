@@ -150,15 +150,8 @@ void cGame::run(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		this->update(elapsedTime);
 		this->render(theSDLWND, theRenderer);
 
-		//	theTimer->update();
-	}
+}
 
-		//if (theTimer->DeltaTime() >= 1.0f / FRAME_RATE)
-		//{
-		//	printf("DeltaTime: %F", theTimer->DeltaTime());
-
-		//	theTimer->update();
-		//}
 }
 
 
@@ -168,6 +161,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	SDL_RenderClear(theRenderer);
 	switch (theGameState)
 	{
+		//RENDER CHANGES DEPENDING ON WGAR STATE THE GAME IS IN.
 	case MENU:
 	{
 		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
@@ -205,7 +199,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		//	theAreaClicked = { 0, 0 };
 		//}
 
-
+		//RENDER EACH LETTER BLOCK IN VECTOR ARRAY
 		for (int draw = 0; draw < theLetters.size(); draw++)
 		{
 			theLetters[draw]->render(theRenderer, &theLetters[draw]->getSpriteDimensions(), &theLetters[draw]->getSpritePos(), theLetters[draw]->getSpriteRotAngle(), &theLetters[draw]->getSpriteCentre(), theLetters[draw]->getSpriteScale());
@@ -239,13 +233,10 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		scale = { 1, 1 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 
-		if (timecount)
-		{
-			time = deltaTime.count();
+		//RENDER TIME
 			gameTextList[3] = TimeAsString.c_str();
 			theTextureMgr->addTexture("time", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
-			timecount = false;
-		}
+
 
 		tempTextTexture = theTextureMgr->getTexture("time");
 		pos = { 700, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
@@ -265,7 +256,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	case END:
 	{
 		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
-
+		//RENDER SCORE
 		if (scoreChanged)
 		{
 			gameTextList[1] = ScoreAsString.c_str();
@@ -280,7 +271,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		pos = { 378, 200, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		scale = { 60, 60 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
-
+		//RENDER BUTTONS
 		spriteBkgd.setSpritePos({ 0, 0 });
 		spriteBkgd.setTexture(theTextureMgr->getTexture("theEnd"));
 		spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("theEnd")->getTWidth(), theTextureMgr->getTexture("theEnd")->getTHeight());
@@ -326,12 +317,6 @@ void cGame::update(double deltaTime)
 	theGameState = theButtonMgr->getBtn("replay_btn")->update(theGameState, PLAYING, theAreaClicked);
 
 	{
-		if (theGameState == PLAYING)
-		{
-			theTimer = Timer::Instance();
-
-
-		}
 		// Update the visibility and position of each letter
 		vector<cLetter*>::iterator letterIterator = theLetters.begin();
 		while (letterIterator != theLetters.end())
@@ -385,11 +370,13 @@ void cGame::update(double deltaTime)
 
 					string thescore = to_string(score);
 					ScoreAsString = "Score: " + thescore;
-
+					time = deltaTime;
+					string theTime = to_string(time);
+					TimeAsString = " Time Left" + time;
+					theTime = deltaTime;
+					
+					//timecount = true;
 					scoreChanged = true;
-
-
-
 				}
 			}
 		}
@@ -471,22 +458,25 @@ bool cGame::getInput(bool theLoop)
 			break;
 			case SDLK_RIGHT:
 			{
-				thePencil.setPencilVelocity({ 5, 0 });
+					thePencil.setPencilVelocity({ 5, 0 });
 			}
-			break;
+				break;
 			case SDLK_d:
 			{
+				//ROTATES PENCIL
 				thePencil.setSpriteRotAngle(thePencil.getSpriteRotAngle() + 5);
 			}
 			break;
 
 			case SDLK_a:
 			{
+				//ROTATES PENCIL
 				thePencil.setSpriteRotAngle(thePencil.getSpriteRotAngle() - 5);
 			}
 			break;
 			case SDLK_SPACE:
 			{
+				//FIRES BALL AT ANGLE RELATIVE TO PENCIL
 				theball.push_back(new cBall);
 				int numBullets = theball.size() - 1;
 				theball[numBullets]->setSpritePos({ thePencil.getBoundingRect().x + thePencil.getSpriteCentre().x, thePencil.getBoundingRect().y + thePencil.getSpriteCentre().y });

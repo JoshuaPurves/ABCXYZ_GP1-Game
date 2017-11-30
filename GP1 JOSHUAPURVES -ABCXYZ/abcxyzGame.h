@@ -14,6 +14,5 @@
 #include "cSoundMgr.h"
 #include "cFileSave.h"
 #include "cFileHandler.h"
-#include "cTimer.h"
 
 #endif
