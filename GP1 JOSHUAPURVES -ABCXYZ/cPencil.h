@@ -13,11 +13,12 @@ class cPencil : public cSprite
 {
 private:
 	SDL_Point PencilVelocity;
+	FPoint direction;
 
 public:
 	cPencil();
-	void update(double deltaTime);		// Rocket update method
-	void setPencilVelocity(SDL_Point rocketVel);   // Sets the velocity for the rocket
-	SDL_Point getPencilVelocity();				 // Gets the rocket velocity
+	void update(double deltaTime);		// pencil update method
+	void setPencilVelocity(SDL_Point pencilVel);   // Sets the velocity for the pencil
+	SDL_Point getPencilVelocity();				 // Gets the pencil velocity
 };
 #endif

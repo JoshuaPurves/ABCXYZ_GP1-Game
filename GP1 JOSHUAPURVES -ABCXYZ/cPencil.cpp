@@ -14,6 +14,7 @@ Defualt Constructor
 cPencil::cPencil() : cSprite()
 {
 	this->PencilVelocity = { 0, 0 };
+	FPoint direction = { 0, 0 };
 }
 /*
 =================================================================
@@ -23,8 +24,6 @@ Update the sprite position
 
 void cPencil::update(double deltaTime)
 {
-
-	FPoint direction = { 0, 0 };
 	direction.X = (sin(this->getSpriteRotAngle()*PI / 180));
 	direction.Y = -(cos(this->getSpriteRotAngle()*PI / 180));
 
@@ -40,8 +39,8 @@ void cPencil::update(double deltaTime)
 
 	this->PencilVelocity.x *= 0.95;
 	this->PencilVelocity.y *= 0.95;
-	
-	this->setSpritePos({ currentSpritePos.x , currentSpritePos.y  });
+
+	this->setSpritePos({ currentSpritePos.x , currentSpritePos.y });
 	this->setBoundingRect(this->getSpritePos());
 }
 /*

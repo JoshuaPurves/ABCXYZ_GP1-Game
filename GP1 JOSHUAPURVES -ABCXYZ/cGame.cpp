@@ -42,13 +42,14 @@ cGame* cGame::getInstance()
 
 void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 {
+	play = false;
 	// Get width and height of render context
 	SDL_GetRendererOutputSize(theRenderer, &renderWidth, &renderHeight);
 	this->m_lastTime = high_resolution_clock::now();
 	// Clear the buffer with a black background
 	SDL_SetRenderDrawColor(theRenderer, 0, 0, 0, 255);
 	SDL_RenderPresent(theRenderer);
-
+	thePencil.setSpritePos({ 400, 650 });
 	theTextureMgr->setRenderer(theRenderer);
 	theFontMgr->initFontLib();
 	theSoundMgr->initMixer();
@@ -56,16 +57,16 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	// Set filename
 	//theFile.setFileName("Data/usermap.dat");
 	// Check file is available
-//	if (!theFile.openFile(ios::in)) //open file for input output
+	//	if (!theFile.openFile(ios::in)) //open file for input output
 	//{
 	//	cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
 	//	fileAvailable = false;
-//	}
-//	else
-//	{
-//		cout << "File '" << theFile.getFileName() << "' opened for input!" << endl;
-//		fileAvailable = true;
-//	}
+	//	}
+	//	else
+	//	{
+	//		cout << "File '" << theFile.getFileName() << "' opened for input!" << endl;
+	//		fileAvailable = true;
+	//	}
 	theAreaClicked = { 0, 0 };
 	// Store the textures
 	textureName = { "x square", "y square", "z square", "ball","thePencil" , "theBackground" , "theEnd" , "thePlay" };
@@ -90,7 +91,6 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		newBtn->setSpriteDimensions(theTextureMgr->getTexture(btnNameList[bCount])->getTWidth(), theTextureMgr->getTexture(btnNameList[bCount])->getTHeight());
 		theButtonMgr->add(btnNameList[bCount], newBtn);
 	}
-	time = 60;
 	theGameState = MENU;
 	theBtnType = EXIT;
 	// Create textures for Game Dialogue (text)
@@ -107,6 +107,8 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	theTextureMgr->addTexture("gameover", theFontMgr->getFont("point")->createTextTexture(theRenderer, gameTextList[2], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("time", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 
+	//IF PLAY BOOL IS TRUE, CREATE THE LETTERS AND MOVE THEIR POSITION DOWN. RANDOMISE WHICH SPRITE USED
+
 	for (int ltr = 0; ltr < 10; ltr++)
 	{
 		theLetters.push_back(new cLetter);
@@ -121,15 +123,17 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 
 	// Load game sounds
 	soundList = { "theme" , "shoot", "beep" };
-	soundTypes = { MUSIC, SFX, SFX};
+	soundTypes = { MUSIC, SFX, SFX };
 	soundsToUse = { "Audio/8bit2.wav" , "Audio/fire.wav", "Audio / beepbeep.wav" };
 	for (int sounds = 0; sounds < soundList.size(); sounds++)
 	{
 		theSoundMgr->add(soundList[sounds], soundsToUse[sounds], soundTypes[sounds]);
 	}
 
-	//theSoundMgr->getSnd("theme")->play(-1);
+	//gets the sound saved as theme and loops it continuously.
+	theSoundMgr->getSnd("theme")->play(-1);
 
+	//sets sprite background to centre at back.
 	spriteBkgd.setSpritePos({ 0, 0 });
 	spriteBkgd.setTexture(theTextureMgr->getTexture("theBackground"));
 	spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("theBackground")->getTWidth(), theTextureMgr->getTexture("theBackground")->getTHeight());
@@ -149,9 +153,7 @@ void cGame::run(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		loop = this->getInput(loop);
 		this->update(elapsedTime);
 		this->render(theSDLWND, theRenderer);
-
-}
-
+	}
 }
 
 
@@ -165,7 +167,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	case MENU:
 	{
 		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
-		// Render Button
+		// Render Buttons
 		theButtonMgr->getBtn("play_btn")->render(theRenderer, &theButtonMgr->getBtn("play_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("play_btn")->getSpritePos(), theButtonMgr->getBtn("play_btn")->getSpriteScale());
 		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 700, 475 });
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
@@ -173,83 +175,83 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	break;
 	case PLAYING:
 	{
-		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
-		
-	//	if (fileAvailable && theGameState == PLAYING)
-		//	FileSave.loadlastgame(&theFile);
-		//	theGameState = PLAYING;
-	//		theAreaClicked = { 0, 0 };
-	//	}
-		//theGameState = theButtonMgr->getBtn("save_btn")->update(theGameState, SAVEMAP, theAreaClicked);
-		//if (theGameState == SAVEMAP)
-		//{
+		{
+			spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
+
+			//	if (fileAvailable && theGameState == PLAYING)
+			//	FileSave.loadlastgame(&theFile);
+			//	theGameState = PLAYING;
+			//		theAreaClicked = { 0, 0 };
+			//	}
+			//theGameState = theButtonMgr->getBtn("save_btn")->update(theGameState, SAVEMAP, theAreaClicked);
+			//if (theGameState == SAVEMAP)
+			//{
 			// Check file is available
-		//	if (!theFile.openFile(ios::out)) //open file for output
-		//	{
-		//		cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
-		//	}
-		//	else
-		//	{
-		//		cout << "File '" << theFile.getFileName() << "' opened for output!" << endl;
-		//		theTileMap.writeMapDataToFile(&theFile);
-		//	}
+			//	if (!theFile.openFile(ios::out)) //open file for output
+			//	{
+			//		cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
+			//	}
+			//	else
+			//	{
+			//		cout << "File '" << theFile.getFileName() << "' opened for output!" << endl;
+			//		theTileMap.writeMapDataToFile(&theFile);
+			//	}
 
 			//theTileMap.writeMapDataToFile(&theFile);
-		//	theGameState = PLAYING;
-		//	theAreaClicked = { 0, 0 };
-		//}
+			//	theGameState = PLAYING;
+			//	theAreaClicked = { 0, 0 };
+			//}
 
-		//RENDER EACH LETTER BLOCK IN VECTOR ARRAY
-		for (int draw = 0; draw < theLetters.size(); draw++)
-		{
-			theLetters[draw]->render(theRenderer, &theLetters[draw]->getSpriteDimensions(), &theLetters[draw]->getSpritePos(), theLetters[draw]->getSpriteRotAngle(), &theLetters[draw]->getSpriteCentre(), theLetters[draw]->getSpriteScale());
-		}
-		// Render each ball in the vector array
-		for (int draw = 0; draw < theball.size(); draw++)
-		{
-			theball[draw]->render(theRenderer, &theball[draw]->getSpriteDimensions(), &theball[draw]->getSpritePos(), theball[draw]->getSpriteRotAngle(), &theball[draw]->getSpriteCentre(), theball[draw]->getSpriteScale());
-		}
-		thePencil.setSpritePos({ 400, 650 });
-		thePencil.setTexture(theTextureMgr->getTexture("thePencil"));
-		thePencil.setSpriteDimensions(theTextureMgr->getTexture("thePencil")->getTWidth(), theTextureMgr->getTexture("thePencil")->getTHeight());
-		FPoint scale = { 0, 0 };
-		thePencil.setPencilVelocity({ 1, 1 });
-		spriteBkgd.setSpritePos({ 0, 0 });
-		cTexture* tempTextTexture = theTextureMgr->getTexture("Title");
-		SDL_Rect pos = { 285, 0, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-		scale = { 1, 1 };
-		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+			//RENDER EACH LETTER BLOCK IN VECTOR ARRAY
+			for (int draw = 0; draw < theLetters.size(); draw++)
+			{
+				theLetters[draw]->render(theRenderer, &theLetters[draw]->getSpriteDimensions(), &theLetters[draw]->getSpritePos(), theLetters[draw]->getSpriteRotAngle(), &theLetters[draw]->getSpriteCentre(), theLetters[draw]->getSpriteScale());
+			}
+			// Render each ball in the vector array
+			for (int draw = 0; draw < theball.size(); draw++)
+			{
+				theball[draw]->render(theRenderer, &theball[draw]->getSpriteDimensions(), &theball[draw]->getSpritePos(), theball[draw]->getSpriteRotAngle(), &theball[draw]->getSpriteCentre(), theball[draw]->getSpriteScale());
+			}
+			//renders the pencil and renders what position it currently is.
+			thePencil.setTexture(theTextureMgr->getTexture("thePencil"));
+			thePencil.setSpriteDimensions(theTextureMgr->getTexture("thePencil")->getTWidth(), theTextureMgr->getTexture("thePencil")->getTHeight());
+			FPoint scale = { 0, 0 };
+			thePencil.setPencilVelocity({ 1, 1 });
+			spriteBkgd.setSpritePos({ 0, 0 });
+			cTexture* tempTextTexture = theTextureMgr->getTexture("Title");
+			SDL_Rect pos = { 285, 0, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+			scale = { 1, 1 };
+			tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 
-		//render score
+			//render score
+			if (scoreChanged)
+			{
+				gameTextList[1] = ScoreAsString.c_str();
+				theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
+				scoreChanged = false;
+			}
+			tempTextTexture = theTextureMgr->getTexture("score");
+			pos = { 150, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+			scale = { 1, 1 };
+			tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 
-		if (scoreChanged)
-		{
-			gameTextList[1] = ScoreAsString.c_str();
-			theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
-			scoreChanged = false;
-		}
-		tempTextTexture = theTextureMgr->getTexture("score");
-		pos = { 150, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-		scale = { 1, 1 };
-		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
-
-		//RENDER TIME
+			//RENDER TIME
 			gameTextList[3] = TimeAsString.c_str();
 			theTextureMgr->addTexture("time", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 
 
-		tempTextTexture = theTextureMgr->getTexture("time");
-		pos = { 700, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
-		scale = { 1, 1 };
-		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+			tempTextTexture = theTextureMgr->getTexture("time");
+			pos = { 700, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+			scale = { 1, 1 };
+			tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 
-		// render the rocket
-		thePencil.render(theRenderer, &thePencil.getSpriteDimensions(), &thePencil.getSpritePos(), thePencil.getSpriteRotAngle(), &thePencil.getSpriteCentre(), thePencil.getSpriteScale());
-		spriteBkgd.setTexture(theTextureMgr->getTexture("thePlay"));
-		spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("thePlay")->getTWidth(), theTextureMgr->getTexture("thePlay")->getTHeight());
-		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 800, 700 });
-		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
-
+			// render the rocket
+			thePencil.render(theRenderer, &thePencil.getSpriteDimensions(), &thePencil.getSpritePos(), thePencil.getSpriteRotAngle(), &thePencil.getSpriteCentre(), thePencil.getSpriteScale());
+			spriteBkgd.setTexture(theTextureMgr->getTexture("thePlay"));
+			spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("thePlay")->getTWidth(), theTextureMgr->getTexture("thePlay")->getTHeight());
+			theButtonMgr->getBtn("exit_btn")->setSpritePos({ 800, 700 });
+			theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
+		}
 	}
 
 	break;
@@ -311,24 +313,32 @@ void cGame::update(double deltaTime)
 	}
 	else
 	{
+		play = true;
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, END, theAreaClicked);
 	}
 	theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, PLAYING, theAreaClicked);
 	theGameState = theButtonMgr->getBtn("replay_btn")->update(theGameState, PLAYING, theAreaClicked);
 
+	if (theGameState == END)
 	{
-		// Update the visibility and position of each letter
-		vector<cLetter*>::iterator letterIterator = theLetters.begin();
-		while (letterIterator != theLetters.end())
+		play = false;
+	}
+	{
+		if (play == true)
 		{
-			if ((*letterIterator)->isActive() == false)
+			// Update the visibility and position of each letter
+			vector<cLetter*>::iterator letterIterator = theLetters.begin();
+			while (letterIterator != theLetters.end())
 			{
-				letterIterator = theLetters.erase(letterIterator);
-			}
-			else
-			{
-				(*letterIterator)->update(deltaTime);
-				++letterIterator;
+				if ((*letterIterator)->isActive() == false)
+				{
+					letterIterator = theLetters.erase(letterIterator);
+				}
+				else
+				{
+					(*letterIterator)->update(deltaTime);
+					++letterIterator;
+				}
 			}
 		}
 		// Update the visibility and position of each bullet
@@ -370,11 +380,12 @@ void cGame::update(double deltaTime)
 
 					string thescore = to_string(score);
 					ScoreAsString = "Score: " + thescore;
+
 					time = deltaTime;
 					string theTime = to_string(time);
 					TimeAsString = " Time Left" + time;
 					theTime = deltaTime;
-					
+
 					//timecount = true;
 					scoreChanged = true;
 				}
@@ -453,14 +464,14 @@ bool cGame::getInput(bool theLoop)
 			break;
 			case SDLK_LEFT:
 			{
-				thePencil.setPencilVelocity({ -5, 0 });
+				thePencil.setPencilVelocity({ -300, 0 });
 			}
 			break;
 			case SDLK_RIGHT:
 			{
-					thePencil.setPencilVelocity({ 5, 0 });
+				thePencil.setPencilVelocity({ 300, 0 });
 			}
-				break;
+			break;
 			case SDLK_d:
 			{
 				//ROTATES PENCIL
@@ -487,7 +498,7 @@ bool cGame::getInput(bool theLoop)
 				theball[numBullets]->setSpriteRotAngle(thePencil.getSpriteRotAngle());
 				theball[numBullets]->setActive(true);
 				cout << "Ball added to Vector at position - x: " << thePencil.getBoundingRect().x << " y: " << thePencil.getBoundingRect().y << endl;
-			
+
 			}
 			break;
 			default:

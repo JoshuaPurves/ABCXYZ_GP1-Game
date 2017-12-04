@@ -18,7 +18,7 @@ using namespace std;
 class cGame
 {
 public:
-	
+
 	cGame();
 	void initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer);
 	void run(SDL_Window* theSDLWND, SDL_Renderer* theRenderer);
@@ -86,6 +86,7 @@ private:
 	cTexture* tempTextTexture;
 	SDL_Point theAreaClicked;
 	bool fileAvailable;
+	bool play;
 
 };
 
