@@ -42,6 +42,7 @@ cGame* cGame::getInstance()
 
 void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 {
+	//play bool begins as off to stop game playing from start
 	play = false;
 	// Get width and height of render context
 	SDL_GetRendererOutputSize(theRenderer, &renderWidth, &renderHeight);
@@ -83,6 +84,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 		theTextureMgr->addTexture(btnNameList[bCount], btnTexturesToUse[bCount]);
 	}
+	//button creation
 	for (int bCount = 0; bCount < btnNameList.size(); bCount++)
 	{
 		cButton * newBtn = new cButton();
@@ -91,6 +93,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		newBtn->setSpriteDimensions(theTextureMgr->getTexture(btnNameList[bCount])->getTWidth(), theTextureMgr->getTexture(btnNameList[bCount])->getTHeight());
 		theButtonMgr->add(btnNameList[bCount], newBtn);
 	}
+	//game starts at the menu screen
 	theGameState = MENU;
 	theBtnType = EXIT;
 	// Create textures for Game Dialogue (text)
@@ -101,19 +104,18 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 38);
 	}
 	gameTextList = { "ABCXYZ - The Game", "The Score: 0" , "GAME OVER", "Time Left: 0" };
-
+//creating array of text to call
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("point")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("gameover", theFontMgr->getFont("point")->createTextTexture(theRenderer, gameTextList[2], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("time", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 
 	//IF PLAY BOOL IS TRUE, CREATE THE LETTERS AND MOVE THEIR POSITION DOWN. RANDOMISE WHICH SPRITE USED
-
 	for (int ltr = 0; ltr < 10; ltr++)
 	{
 		theLetters.push_back(new cLetter);
 		theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
-		theLetters[ltr]->setSpriteTranslation({ 10, 59 });
+		theLetters[ltr]->setSpriteTranslation({ 10, 60 });
 		int randLetter = rand() % 3;
 		theLetters[ltr]->setTexture(theTextureMgr->getTexture(textureName[randLetter]));
 		theLetters[ltr]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randLetter])->getTWidth(), theTextureMgr->getTexture(textureName[randLetter])->getTHeight());
@@ -124,7 +126,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	// Load game sounds
 	soundList = { "theme" , "shoot", "beep" };
 	soundTypes = { MUSIC, SFX, SFX };
-	soundsToUse = { "Audio/8bit2.wav" , "Audio/fire.wav", "Audio / beepbeep.wav" };
+	soundsToUse = { "Audio/8bit2.wav" , "Audio/fire.wav", "Audio/beepbeep.wav" };
 	for (int sounds = 0; sounds < soundList.size(); sounds++)
 	{
 		theSoundMgr->add(soundList[sounds], soundsToUse[sounds], soundTypes[sounds]);
@@ -230,6 +232,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 				theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 				scoreChanged = false;
 			}
+			//creates score texture
 			tempTextTexture = theTextureMgr->getTexture("score");
 			pos = { 150, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 			scale = { 1, 1 };
@@ -239,7 +242,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 			gameTextList[3] = TimeAsString.c_str();
 			theTextureMgr->addTexture("time", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 
-
+			//creates time texture
 			tempTextTexture = theTextureMgr->getTexture("time");
 			pos = { 700, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 			scale = { 1, 1 };
@@ -313,11 +316,13 @@ void cGame::update(double deltaTime)
 	}
 	else
 	{
+		//if its not END OR MENU the game begins
 		play = true;
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, END, theAreaClicked);
 	}
 	theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, PLAYING, theAreaClicked);
 	theGameState = theButtonMgr->getBtn("replay_btn")->update(theGameState, PLAYING, theAreaClicked);
+
 
 	if (theGameState == END)
 	{
@@ -326,6 +331,7 @@ void cGame::update(double deltaTime)
 	{
 		if (play == true)
 		{
+			
 			// Update the visibility and position of each letter
 			vector<cLetter*>::iterator letterIterator = theLetters.begin();
 			while (letterIterator != theLetters.end())
@@ -341,20 +347,26 @@ void cGame::update(double deltaTime)
 				}
 			}
 		}
-		// Update the visibility and position of each bullet
-		vector<cBall*>::iterator ballIterartor = theball.begin();
-		while (ballIterartor != theball.end())
+
+		if (play == true)
 		{
-			if ((*ballIterartor)->isActive() == false)
+			// Update the visibility and position of each bullet
+			vector<cBall*>::iterator ballIterartor = theball.begin();
+			while (ballIterartor != theball.end())
 			{
-				ballIterartor = theball.erase(ballIterartor);
-			}
-			else
-			{
-				(*ballIterartor)->update(deltaTime);
-				++ballIterartor;
+				if ((*ballIterartor)->isActive() == false)
+				{
+					ballIterartor = theball.erase(ballIterartor);
+				}
+				else
+				{
+					(*ballIterartor)->update(deltaTime);
+					++ballIterartor;
+					theSoundMgr->getSnd("beep")->play(0);
+				}
 			}
 		}
+
 		/*
 		==============================================================
 		| Check for collisions
@@ -367,12 +379,9 @@ void cGame::update(double deltaTime)
 			{
 				if ((*letterIterator)->collidedWith(&(*letterIterator)->getBoundingRect(), &(*ballIterartor)->getBoundingRect()))
 				{
-					theSoundMgr->getSnd("beep")->play(0);
-					// if a collision set the bullet and asteroid to false
-					(*letterIterator)->setActive(false);
-					(*ballIterartor)->setActive(false);
+					
+					// if a collision set the letter and ball to false
 					score += 5;
-
 					if (theTextureMgr->getTexture("score") != NULL)
 					{
 						theTextureMgr->deleteTexture("score");
@@ -381,13 +390,16 @@ void cGame::update(double deltaTime)
 					string thescore = to_string(score);
 					ScoreAsString = "Score: " + thescore;
 
-					time = deltaTime;
+					scoreChanged = true;
+
 					string theTime = to_string(time);
 					TimeAsString = " Time Left" + time;
-					theTime = deltaTime;
 
 					//timecount = true;
-					scoreChanged = true;
+					theSoundMgr->getSnd("beep")->play(0);
+					(*letterIterator)->setActive(false);
+					(*ballIterartor)->setActive(false);
+					
 				}
 			}
 		}
@@ -431,10 +443,7 @@ bool cGame::getInput(bool theLoop)
 			{
 			case SDL_BUTTON_LEFT:
 			{
-				if (theGameState == PLAYING)
-				{
 					theAreaClicked = { event.motion.x, event.motion.y };
-				}
 			}
 			break;
 			case SDL_BUTTON_RIGHT:
@@ -464,11 +473,13 @@ bool cGame::getInput(bool theLoop)
 			break;
 			case SDLK_LEFT:
 			{
+				//if left arrow clicked pencil moves left
 				thePencil.setPencilVelocity({ -300, 0 });
 			}
 			break;
 			case SDLK_RIGHT:
 			{
+				//if right arrow clicked pencil moves right
 				thePencil.setPencilVelocity({ 300, 0 });
 			}
 			break;

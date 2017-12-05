@@ -12,7 +12,7 @@ cRocket.h
 class cPencil : public cSprite
 {
 private:
-	SDL_Point PencilVelocity;
+	SDL_Point PencilVelocity;	
 	FPoint direction;
 
 public:

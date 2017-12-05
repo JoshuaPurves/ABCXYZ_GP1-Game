@@ -25,6 +25,7 @@ Update the sprite position
 
 gameState cButton::update(gameState theCurrentGameState, gameState newGameState, SDL_Point theAreaClicked)
 {
+	//finds where it is clicked and returns new gamestate value
 	SDL_Point areaClicked = theAreaClicked;
 	if (areaClicked.x > this->getSpritePos().x && areaClicked.x < (this->getSpritePos().x + this->getSpriteDimensions().w) && areaClicked.y > this->getSpritePos().y && areaClicked.y < (this->getSpritePos().y + this->getSpriteDimensions().h))
 	{
