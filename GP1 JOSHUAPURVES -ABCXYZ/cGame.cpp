@@ -124,9 +124,9 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	}
 
 	// Load game sounds
-	soundList = { "theme" , "boop", "beep" };
-	soundTypes = { MUSIC, SFX, SFX };
-	soundsToUse = { "Audio/8bit2.wav" , "Audio/boop.wav", "Audio/beepbeep.wav" };
+	soundList = { "theme" , "boop", "laser", "click" };
+	soundTypes = { MUSIC, SFX, SFX, SFX };
+	soundsToUse = { "Audio/8bit2.wav" , "Audio/boop.wav", "Audio/laser.wav", "Audio/click.wav" };
 	for (int sounds = 0; sounds < soundList.size(); sounds++)
 	{
 		theSoundMgr->add(soundList[sounds], soundsToUse[sounds], soundTypes[sounds]);
@@ -383,6 +383,7 @@ void cGame::update(double deltaTime)
 					{
 						theTextureMgr->deleteTexture("score");
 					}
+					theSoundMgr->getSnd("boop")->play(0);
 
 					string thescore = to_string(score);
 					ScoreAsString = "Score: " + thescore;
@@ -425,7 +426,9 @@ bool cGame::getInput(bool theLoop)
 			{
 			case SDL_BUTTON_LEFT:
 			{
+				theSoundMgr->getSnd("click")->play(0);
 				theAreaClicked = { event.motion.x, event.motion.y };
+				
 			}
 			break;
 			case SDL_BUTTON_RIGHT:
@@ -471,12 +474,14 @@ bool cGame::getInput(bool theLoop)
 			{
 				//if left arrow clicked pencil moves left
 				thePencil.setPencilVelocity({ -300, 0 });
+			
 			}
 			break;
 			case SDLK_RIGHT:
 			{
 				//if right arrow clicked pencil moves right
 				thePencil.setPencilVelocity({ 300, 0 });
+				
 			}
 			break;
 			case SDLK_d:
@@ -494,7 +499,7 @@ bool cGame::getInput(bool theLoop)
 			break;
 			case SDLK_SPACE:
 			{
-				theSoundMgr->getSnd("boop")->play(0);
+				theSoundMgr->getSnd("laser")->play(0);
 				//FIRES BALL AT ANGLE RELATIVE TO PENCIL
 				theball.push_back(new cBall);
 				int numBullets = theball.size() - 1;
