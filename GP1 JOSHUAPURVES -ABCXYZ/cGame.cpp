@@ -124,9 +124,9 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	}
 
 	// Load game sounds
-	soundList = { "theme" , "boop", "laser", "click" };
-	soundTypes = { MUSIC, SFX, SFX, SFX };
-	soundsToUse = { "Audio/8bit2.wav" , "Audio/boop.wav", "Audio/laser.wav", "Audio/click.wav" };
+	soundList = { "theme" , "boop", "laser", "click", "pencil" };
+	soundTypes = { MUSIC, SFX, SFX, SFX, SFX };
+	soundsToUse = { "Audio/8bit2.wav" , "Audio/boop.wav", "Audio/laser.wav", "Audio/click.wav", "Audio/pencil.wav" };
 	for (int sounds = 0; sounds < soundList.size(); sounds++)
 	{
 		theSoundMgr->add(soundList[sounds], soundsToUse[sounds], soundTypes[sounds]);
@@ -474,14 +474,14 @@ bool cGame::getInput(bool theLoop)
 			{
 				//if left arrow clicked pencil moves left
 				thePencil.setPencilVelocity({ -300, 0 });
-			
+				theSoundMgr->getSnd("pencil")->play(0);
 			}
 			break;
 			case SDLK_RIGHT:
 			{
 				//if right arrow clicked pencil moves right
 				thePencil.setPencilVelocity({ 300, 0 });
-				
+				theSoundMgr->getSnd("pencil")->play(0);
 			}
 			break;
 			case SDLK_d:
