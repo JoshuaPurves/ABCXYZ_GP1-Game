@@ -104,7 +104,7 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 38);
 	}
 	gameTextList = { "ABCXYZ - The Game", "The Score: 0" , "GAME OVER", "Time Left: 0" };
-//creating array of text to call
+	//creating array of text to call
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("point")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("gameover", theFontMgr->getFont("point")->createTextTexture(theRenderer, gameTextList[2], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
@@ -124,9 +124,9 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	}
 
 	// Load game sounds
-	soundList = { "theme" , "shoot", "beep" };
+	soundList = { "theme" , "boop", "beep" };
 	soundTypes = { MUSIC, SFX, SFX };
-	soundsToUse = { "Audio/8bit2.wav" , "Audio/fire.wav", "Audio/beepbeep.wav" };
+	soundsToUse = { "Audio/8bit2.wav" , "Audio/boop.wav", "Audio/beepbeep.wav" };
 	for (int sounds = 0; sounds < soundList.size(); sounds++)
 	{
 		theSoundMgr->add(soundList[sounds], soundsToUse[sounds], soundTypes[sounds]);
@@ -139,8 +139,6 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	spriteBkgd.setSpritePos({ 0, 0 });
 	spriteBkgd.setTexture(theTextureMgr->getTexture("theBackground"));
 	spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("theBackground")->getTWidth(), theTextureMgr->getTexture("theBackground")->getTHeight());
-
-
 }
 
 void cGame::run(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
@@ -331,7 +329,7 @@ void cGame::update(double deltaTime)
 	{
 		if (play == true)
 		{
-			
+
 			// Update the visibility and position of each letter
 			vector<cLetter*>::iterator letterIterator = theLetters.begin();
 			while (letterIterator != theLetters.end())
@@ -362,7 +360,6 @@ void cGame::update(double deltaTime)
 				{
 					(*ballIterartor)->update(deltaTime);
 					++ballIterartor;
-					theSoundMgr->getSnd("beep")->play(0);
 				}
 			}
 		}
@@ -379,7 +376,7 @@ void cGame::update(double deltaTime)
 			{
 				if ((*letterIterator)->collidedWith(&(*letterIterator)->getBoundingRect(), &(*ballIterartor)->getBoundingRect()))
 				{
-					
+
 					// if a collision set the letter and ball to false
 					score += 5;
 					if (theTextureMgr->getTexture("score") != NULL)
@@ -396,10 +393,10 @@ void cGame::update(double deltaTime)
 					TimeAsString = " Time Left" + time;
 
 					//timecount = true;
-					theSoundMgr->getSnd("beep")->play(0);
+					
 					(*letterIterator)->setActive(false);
 					(*ballIterartor)->setActive(false);
-					
+
 				}
 			}
 		}
@@ -429,7 +426,6 @@ bool cGame::getInput(bool theLoop)
 			case SDL_BUTTON_LEFT:
 			{
 				theAreaClicked = { event.motion.x, event.motion.y };
-				theSoundMgr->getSnd("shoot")->play(0);
 			}
 			break;
 			case SDL_BUTTON_RIGHT:
@@ -443,7 +439,7 @@ bool cGame::getInput(bool theLoop)
 			{
 			case SDL_BUTTON_LEFT:
 			{
-					theAreaClicked = { event.motion.x, event.motion.y };
+				theAreaClicked = { event.motion.x, event.motion.y };
 			}
 			break;
 			case SDL_BUTTON_RIGHT:
@@ -498,6 +494,7 @@ bool cGame::getInput(bool theLoop)
 			break;
 			case SDLK_SPACE:
 			{
+				theSoundMgr->getSnd("boop")->play(0);
 				//FIRES BALL AT ANGLE RELATIVE TO PENCIL
 				theball.push_back(new cBall);
 				int numBullets = theball.size() - 1;
@@ -509,6 +506,7 @@ bool cGame::getInput(bool theLoop)
 				theball[numBullets]->setSpriteRotAngle(thePencil.getSpriteRotAngle());
 				theball[numBullets]->setActive(true);
 				cout << "Ball added to Vector at position - x: " << thePencil.getBoundingRect().x << " y: " << thePencil.getBoundingRect().y << endl;
+				
 
 			}
 			break;
@@ -546,6 +544,4 @@ void cGame::cleanUp(SDL_Window* theSDLWND)
 	// Shutdown SDL 2
 	SDL_Quit();
 }
-
-
 
