@@ -2,7 +2,7 @@
 =================
 cButton.h
 - Header file for class definition - SPECIFICATION
-- Header file for the tileMap class which is a child of cSprite class
+- Header file for the button class which is a child of cSprite class
 =================
 */
 #ifndef _CBUTTON_H

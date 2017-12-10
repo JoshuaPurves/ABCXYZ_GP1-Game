@@ -42,6 +42,9 @@ cGame* cGame::getInstance()
 
 void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 {
+	score = 0;
+	//replay bool begins as off to stop game reseting from start
+	replay = false;
 	//play bool begins as off to stop game playing from start
 	play = false;
 	// Get width and height of render context
@@ -252,6 +255,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 			spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("thePlay")->getTWidth(), theTextureMgr->getTexture("thePlay")->getTHeight());
 			theButtonMgr->getBtn("exit_btn")->setSpritePos({ 800, 700 });
 			theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
+		
 		}
 	}
 
@@ -307,7 +311,8 @@ void cGame::update()
 
 void cGame::update(double deltaTime)
 {
-	// Check Button clicked and change state
+
+		// Check Button clicked and change state
 	if (theGameState == MENU || theGameState == END)
 	{
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
@@ -401,7 +406,31 @@ void cGame::update(double deltaTime)
 				}
 			}
 		}
+		if (replay == true)
+		{
+			for (int ltr = 0; ltr < 10; ltr++)
+			{
+				theLetters.push_back(new cLetter);
+				theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
+			theLetters[ltr]->setSpriteTranslation({ 10, 60 });
+				int randLetter = rand() % 3;
+				theLetters[ltr]->setTexture(theTextureMgr->getTexture(textureName[randLetter]));
+				theLetters[ltr]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randLetter])->getTWidth(), theTextureMgr->getTexture(textureName[randLetter])->getTHeight());
+				theLetters[ltr]->setLetterVelocity({ 1, 1 });
+				theLetters[ltr]->setActive(true);
+			}
+			replay = false;
+		}
 	}
+
+	//if (score == 40)
+	//{
+		//tryna get the game to stop at a score of 40
+		//play = false;
+		//score = 40;
+		//theGameState = END;
+		// permanently end as score remains 40
+	//}
 
 
 	// Update the Rockets position

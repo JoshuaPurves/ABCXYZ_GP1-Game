@@ -2,7 +2,7 @@
 =================
 cLetter.h
 - Header file for class definition - SPECIFICATION
-- Header file for the Rocket class which is a child of cSprite class
+- Header file for the pencil class which is a child of cSprite class
 =================
 */
 #ifndef _CLETTER_H

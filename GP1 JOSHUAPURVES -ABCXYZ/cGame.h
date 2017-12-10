@@ -87,6 +87,7 @@ private:
 	SDL_Point theAreaClicked;
 	bool fileAvailable;
 	bool play;
+	bool replay;
 };
 
 #endif
