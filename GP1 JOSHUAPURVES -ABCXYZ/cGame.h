@@ -66,6 +66,8 @@ private:
 	// Define the elements and there position in/on the array/map
 	int renderWidth, renderHeight;
 	int score;
+	int rescore;
+	string RescoreAsString;
 	string ScoreAsString;
 	string TimeAsString;
 	bool scoreChanged;

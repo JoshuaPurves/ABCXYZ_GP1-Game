@@ -43,6 +43,7 @@ cGame* cGame::getInstance()
 void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 {
 	score = 0;
+	rescore = 0;
 	//replay bool begins as off to stop game reseting from start
 	replay = false;
 	//play bool begins as off to stop game playing from start
@@ -106,25 +107,44 @@ void cGame::initialise(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 	{
 		theFontMgr->addFont(fontList[fonts], fontsToUse[fonts], 38);
 	}
-	gameTextList = { "ABCXYZ - The Game", "The Score: 0" , "GAME OVER", "Time Left: 0" };
+	gameTextList = { "ABCXYZ - The Game", "The Score: 0" , "GAME OVER", "Time Left: 0", "The Score: 0" };
 	//creating array of text to call
 	theTextureMgr->addTexture("Title", theFontMgr->getFont("point")->createTextTexture(theRenderer, gameTextList[0], SOLID, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("gameover", theFontMgr->getFont("point")->createTextTexture(theRenderer, gameTextList[2], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 	theTextureMgr->addTexture("time", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
+	theTextureMgr->addTexture("rescore", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
 
 	//IF PLAY BOOL IS TRUE, CREATE THE LETTERS AND MOVE THEIR POSITION DOWN. RANDOMISE WHICH SPRITE USED
-	for (int ltr = 0; ltr < 10; ltr++)
-	{
-		theLetters.push_back(new cLetter);
-		theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
-		theLetters[ltr]->setSpriteTranslation({ 10, 60 });
-		int randLetter = rand() % 3;
-		theLetters[ltr]->setTexture(theTextureMgr->getTexture(textureName[randLetter]));
-		theLetters[ltr]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randLetter])->getTWidth(), theTextureMgr->getTexture(textureName[randLetter])->getTHeight());
-		theLetters[ltr]->setLetterVelocity({ 1, 1 });
-		theLetters[ltr]->setActive(true);
-	}
+	
+	//if (play == true)
+	//{
+		for (int ltr = 0; ltr < 10; ltr++)
+		{
+			theLetters.push_back(new cLetter);
+			theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
+			theLetters[ltr]->setSpriteTranslation({ 10, 60 });
+			int randLetter = rand() % 3;
+			theLetters[ltr]->setTexture(theTextureMgr->getTexture(textureName[randLetter]));
+			theLetters[ltr]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randLetter])->getTWidth(), theTextureMgr->getTexture(textureName[randLetter])->getTHeight());
+			theLetters[ltr]->setLetterVelocity({ 1, 1 });
+			theLetters[ltr]->setActive(true);
+		}
+	//}
+	//if (replay == true)
+	//{
+		//for (int ltr = 0; ltr < 10; ltr++)
+		//{
+		//	theLetters.push_back(new cLetter);
+			//theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
+			//theLetters[ltr]->setSpriteTranslation({ 10, 60 });
+		//	int randLetter = rand() % 3;
+		//	theLetters[ltr]->setTexture(theTextureMgr->getTexture(textureName[randLetter]));
+		//	theLetters[ltr]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randLetter])->getTWidth(), theTextureMgr->getTexture(textureName[randLetter])->getTHeight());
+			//theLetters[ltr]->setLetterVelocity({ 1, 1 });
+		//	theLetters[ltr]->setActive(true);
+	//	}
+	//}
 
 	// Load game sounds
 	soundList = { "theme" , "boop", "laser", "click", "pencil" };
@@ -255,11 +275,92 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 			spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("thePlay")->getTWidth(), theTextureMgr->getTexture("thePlay")->getTHeight());
 			theButtonMgr->getBtn("exit_btn")->setSpritePos({ 800, 700 });
 			theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
-		
+
 		}
 	}
-
 	break;
+	case REPLAYING:
+	{
+		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
+
+		//	if (fileAvailable && theGameState == PLAYING)
+		//	FileSave.loadlastgame(&theFile);
+		//	theGameState = PLAYING;
+		//		theAreaClicked = { 0, 0 };
+		//	}
+		//theGameState = theButtonMgr->getBtn("save_btn")->update(theGameState, SAVEMAP, theAreaClicked);
+		//if (theGameState == SAVEMAP)
+		//{
+		// Check file is available
+		//	if (!theFile.openFile(ios::out)) //open file for output
+		//	{
+		//		cout << "Could not open specified file '" << theFile.getFileName() << "'. Error " << SDL_GetError() << endl;
+		//	}
+		//	else
+		//	{
+		//		cout << "File '" << theFile.getFileName() << "' opened for output!" << endl;
+		//		theTileMap.writeMapDataToFile(&theFile);
+		//	}
+
+		//theTileMap.writeMapDataToFile(&theFile);
+		//	theGameState = PLAYING;
+		//	theAreaClicked = { 0, 0 };
+		//}
+
+		//RENDER EACH LETTER BLOCK IN VECTOR ARRAY
+		for (int draw = 0; draw < theLetters.size(); draw++)
+	{
+		theLetters[draw]->render(theRenderer, &theLetters[draw]->getSpriteDimensions(), &theLetters[draw]->getSpritePos(), theLetters[draw]->getSpriteRotAngle(), &theLetters[draw]->getSpriteCentre(), theLetters[draw]->getSpriteScale());
+		}
+		// Render each ball in the vector array
+		for (int draw = 0; draw < theball.size(); draw++)
+	{
+			theball[draw]->render(theRenderer, &theball[draw]->getSpriteDimensions(), &theball[draw]->getSpritePos(), theball[draw]->getSpriteRotAngle(), &theball[draw]->getSpriteCentre(), theball[draw]->getSpriteScale());
+	}
+		//renders the pencil and renders what position it currently is.
+		thePencil.setTexture(theTextureMgr->getTexture("thePencil"));
+		thePencil.setSpriteDimensions(theTextureMgr->getTexture("thePencil")->getTWidth(), theTextureMgr->getTexture("thePencil")->getTHeight());
+		FPoint scale = { 0, 0 };
+		thePencil.setPencilVelocity({ 1, 1 });
+		spriteBkgd.setSpritePos({ 0, 0 });
+		cTexture* tempTextTexture = theTextureMgr->getTexture("Title");
+		SDL_Rect pos = { 285, 0, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		scale = { 1, 1 };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+
+		//render score
+		if (scoreChanged)
+		{
+			gameTextList[4] = RescoreAsString.c_str();
+			theTextureMgr->addTexture("rescore", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
+			scoreChanged = false;
+		}
+		//creates score texture
+		tempTextTexture = theTextureMgr->getTexture("rescore");
+		pos = { 150, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		scale = { 1, 1 };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+
+		//RENDER TIME
+		gameTextList[3] = TimeAsString.c_str();
+		theTextureMgr->addTexture("time", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[3], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
+
+		//creates time texture
+		tempTextTexture = theTextureMgr->getTexture("time");
+		pos = { 700, 55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		scale = { 1, 1 };
+		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
+
+		// render the rocket
+		thePencil.render(theRenderer, &thePencil.getSpriteDimensions(), &thePencil.getSpritePos(), thePencil.getSpriteRotAngle(), &thePencil.getSpriteCentre(), thePencil.getSpriteScale());
+		spriteBkgd.setTexture(theTextureMgr->getTexture("thePlay"));
+		spriteBkgd.setSpriteDimensions(theTextureMgr->getTexture("thePlay")->getTWidth(), theTextureMgr->getTexture("thePlay")->getTHeight());
+		theButtonMgr->getBtn("exit_btn")->setSpritePos({ 800, 700 });
+		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
+
+	}
+	break;
+
 	case END:
 	{
 		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
@@ -312,7 +413,7 @@ void cGame::update()
 void cGame::update(double deltaTime)
 {
 
-		// Check Button clicked and change state
+	// Check Button clicked and change state
 	if (theGameState == MENU || theGameState == END)
 	{
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
@@ -324,14 +425,22 @@ void cGame::update(double deltaTime)
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, END, theAreaClicked);
 	}
 	theGameState = theButtonMgr->getBtn("play_btn")->update(theGameState, PLAYING, theAreaClicked);
-	theGameState = theButtonMgr->getBtn("replay_btn")->update(theGameState, PLAYING, theAreaClicked);
-
+	theGameState = theButtonMgr->getBtn("replay_btn")->update(theGameState, REPLAYING, theAreaClicked);
+	//if (PLAYING & score == 40)
+	//{
+		//theGameState = END;
+		//play = false;
+	//}
 
 	if (theGameState == END)
 	{
 		play = false;
 	}
+	if (theGameState == REPLAYING)
 	{
+		play = false;
+		replay = true;
+	}
 		if (play == true)
 		{
 
@@ -368,6 +477,56 @@ void cGame::update(double deltaTime)
 				}
 			}
 		}
+	if (replay == true)
+		{
+			for (int ltr = 0; ltr < 10; ltr++)
+			{
+				theLetters.push_back(new cLetter);
+				theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
+				theLetters[ltr]->setSpriteTranslation({ 10, 60 });
+				int randLetter = rand() % 3;
+				theLetters[ltr]->setTexture(theTextureMgr->getTexture(textureName[randLetter]));
+				theLetters[ltr]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randLetter])->getTWidth(), theTextureMgr->getTexture(textureName[randLetter])->getTHeight());
+				theLetters[ltr]->setLetterVelocity({ 1, 1 });
+				theLetters[ltr]->setActive(true);
+			}
+			replay = false;
+		}
+		if (replay == true)
+		{
+			// Update the visibility and position of each bullet
+			vector<cBall*>::iterator ballIterartor = theball.begin();
+			while (ballIterartor != theball.end())
+			{
+				if ((*ballIterartor)->isActive() == false)
+				{
+					ballIterartor = theball.erase(ballIterartor);
+				}
+				else
+				{
+					(*ballIterartor)->update(deltaTime);
+					++ballIterartor;
+				}
+			}
+		}
+		if (replay == true)
+		{
+
+			// Update the visibility and position of each letter
+			vector<cLetter*>::iterator letterIterator = theLetters.begin();
+			while (letterIterator != theLetters.end())
+			{
+				if ((*letterIterator)->isActive() == false)
+				{
+					letterIterator = theLetters.erase(letterIterator);
+				}
+				else
+				{
+					(*letterIterator)->update(deltaTime);
+					++letterIterator;
+				}
+			}
+		}
 
 		/*
 		==============================================================
@@ -391,46 +550,35 @@ void cGame::update(double deltaTime)
 					theSoundMgr->getSnd("boop")->play(0);
 
 					string thescore = to_string(score);
-					ScoreAsString = "Score: " + thescore;
+					ScoreAsString = "The Score: " + thescore;
 
 					scoreChanged = true;
 
 					string theTime = to_string(time);
 					TimeAsString = " Time Left" + time;
 
+					if (theGameState == REPLAYING)
+					{
+						rescore += 5;
+						theTextureMgr->deleteTexture("score");
+						string therescore = to_string(rescore);
+						RescoreAsString = "The Score: " + thescore;
+
+						scoreChanged = true;
+
+						(*letterIterator)->setActive(false);
+						(*ballIterartor)->setActive(false);
+					}
 					//timecount = true;
-					
+
 					(*letterIterator)->setActive(false);
 					(*ballIterartor)->setActive(false);
 
 				}
 			}
 		}
-		if (replay == true)
-		{
-			for (int ltr = 0; ltr < 10; ltr++)
-			{
-				theLetters.push_back(new cLetter);
-				theLetters[ltr]->setSpritePos({ ltr * 100 , 100 });
-			theLetters[ltr]->setSpriteTranslation({ 10, 60 });
-				int randLetter = rand() % 3;
-				theLetters[ltr]->setTexture(theTextureMgr->getTexture(textureName[randLetter]));
-				theLetters[ltr]->setSpriteDimensions(theTextureMgr->getTexture(textureName[randLetter])->getTWidth(), theTextureMgr->getTexture(textureName[randLetter])->getTHeight());
-				theLetters[ltr]->setLetterVelocity({ 1, 1 });
-				theLetters[ltr]->setActive(true);
-			}
-			replay = false;
-		}
-	}
-
-	//if (score == 40)
-	//{
-		//tryna get the game to stop at a score of 40
-		//play = false;
-		//score = 40;
-		//theGameState = END;
-		// permanently end as score remains 40
-	//}
+	
+	
 
 
 	// Update the Rockets position
