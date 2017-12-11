@@ -66,13 +66,9 @@ private:
 	// Define the elements and there position in/on the array/map
 	int renderWidth, renderHeight;
 	int score;
-	int rescore;
-	string RescoreAsString;
 	string ScoreAsString;
 	string TimeAsString;
 	bool scoreChanged;
-	bool timecount;
-	int time;
 	// Create vector array of button textures
 	vector<LPCSTR> btnNameList;
 	vector<LPCSTR> btnTexturesToUse;
@@ -89,7 +85,8 @@ private:
 	SDL_Point theAreaClicked;
 	bool fileAvailable;
 	bool play;
-	bool replay;
+	bool latestscores;
+	
 };
 
 #endif

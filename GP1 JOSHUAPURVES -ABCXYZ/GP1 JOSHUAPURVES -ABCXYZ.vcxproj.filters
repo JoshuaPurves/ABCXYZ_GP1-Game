@@ -69,9 +69,6 @@
     <ClInclude Include="cFileHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cFileSave.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cBkGround.cpp">

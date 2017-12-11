@@ -154,7 +154,6 @@ xcopy /Y "C:\Users\Graham Purve\Desktop\SDL2\SDL2_ttf-2.0.14\lib\x86\*.dll" "$(O
     <ClInclude Include="cSprite.h" />
     <ClInclude Include="cTexture.h" />
     <ClInclude Include="cTextureMgr.h" />
-    <ClInclude Include="cFileSave.h" />
     <ClInclude Include="GameConstants.h" />
   </ItemGroup>
   <ItemGroup>
