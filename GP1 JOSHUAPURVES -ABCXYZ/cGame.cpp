@@ -426,6 +426,7 @@ void cGame::update(double deltaTime)
 		string thescore = to_string(score);
 		ScoreAsString = "The Score: " + thescore;
 		scoreChanged = true;
+		play = false;
 		theGameState = theButtonMgr->getBtn("replay_btn")->update(theGameState, PLAYING, theAreaClicked);
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
 	}
