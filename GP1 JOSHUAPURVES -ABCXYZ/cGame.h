@@ -66,8 +66,10 @@ private:
 	// Define the elements and there position in/on the array/map
 	int renderWidth, renderHeight;
 	int score;
+	int latestscore;
 	string ScoreAsString;
-	string TimeAsString;
+	string NewScoreAsString;
+	bool newscoreChanged;
 	bool scoreChanged;
 	// Create vector array of button textures
 	vector<LPCSTR> btnNameList;

@@ -160,7 +160,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
 	}
 	break;
-		//All code effects PLAYING state
+	//All code effects PLAYING state
 	case PLAYING:
 	{
 		{
@@ -228,7 +228,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		}
 
 		tempTextTexture = theTextureMgr->getTexture("latestscore");
-		pos = {600 ,55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
+		pos = { 600 ,55, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
 	}
 	break;
@@ -243,19 +243,33 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 			ofstream scoreSave;
 			scoreSave.open("latestscores.txt");
 			scoreSave.clear();
-			scoreSave << ScoreAsString;
+			scoreSave << NewScoreAsString;
 			scoreSave.close();
 			latestscores = true;
 		}
 		spriteBkgd.render(theRenderer, NULL, NULL, spriteBkgd.getSpriteScale());
-		//RENDER SCORE
-		if (scoreChanged)
+		if (theTextureMgr->getTexture("latestscore") != NULL)
 		{
-			gameTextList[1] = ScoreAsString.c_str();
-			theTextureMgr->addTexture("score", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
-			scoreChanged = false;
+			theTextureMgr->deleteTexture("latestscore");
 		}
-		tempTextTexture = theTextureMgr->getTexture("score");
+		ifstream scoreSave;
+		string latestscore;
+		scoreSave.open("latestscores.txt");
+		scoreSave.clear();
+		scoreSave >> latestscore;
+		scoreSave.close();
+		gameTextList[4] = latestscore.c_str();
+		theTextureMgr->addTexture("latestscore", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[4], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
+		latestscores = false;
+
+		//RENDER SCORE
+		if (newscoreChanged)
+		{
+			gameTextList[4] = NewScoreAsString.c_str();
+			theTextureMgr->addTexture("latestscore", theFontMgr->getFont("bbe")->createTextTexture(theRenderer, gameTextList[1], SOLID, { 0, 0, 255, 0 }, { 0, 0, 0, 0 }));
+			newscoreChanged = false;
+		}
+		tempTextTexture = theTextureMgr->getTexture("latestscore");
 		pos = { 425, 350, tempTextTexture->getTextureRect().w, tempTextTexture->getTextureRect().h };
 		scale = { 1, 1 };
 		tempTextTexture->renderTexture(theRenderer, tempTextTexture->getTexture(), &tempTextTexture->getTextureRect(), &pos, scale);
@@ -273,6 +287,7 @@ void cGame::render(SDL_Window* theSDLWND, SDL_Renderer* theRenderer)
 		theButtonMgr->getBtn("exit_btn")->render(theRenderer, &theButtonMgr->getBtn("exit_btn")->getSpriteDimensions(), &theButtonMgr->getBtn("exit_btn")->getSpritePos(), theButtonMgr->getBtn("exit_btn")->getSpriteScale());
 
 	}
+
 	break;
 	case QUIT:
 	{
@@ -370,15 +385,20 @@ void cGame::update(double deltaTime)
 
 					// if a collision set the letter and ball to false
 					score += 5;
+					latestscore += 5;
 					if (theTextureMgr->getTexture("score") != NULL)
 					{
 						theTextureMgr->deleteTexture("score");
 					}
+		
 					theSoundMgr->getSnd("boop")->play(0);
 
 					string thescore = to_string(score);
 					ScoreAsString = "The Score: " + thescore;
 
+					string newscore = to_string(latestscore);
+					NewScoreAsString = "Latest-Score:" + newscore;
+					newscoreChanged = true;
 					scoreChanged = true;
 
 					(*letterIterator)->setActive(false);
@@ -398,7 +418,14 @@ void cGame::update(double deltaTime)
 	break;
 	case END:
 	{
-		play = false;
+		score = 0;
+		if (theTextureMgr->getTexture("score") != NULL)
+		{
+			theTextureMgr->deleteTexture("score");
+		}
+		string thescore = to_string(score);
+		ScoreAsString = "The Score: " + thescore;
+		scoreChanged = true;
 		theGameState = theButtonMgr->getBtn("replay_btn")->update(theGameState, PLAYING, theAreaClicked);
 		theGameState = theButtonMgr->getBtn("exit_btn")->update(theGameState, QUIT, theAreaClicked);
 	}
