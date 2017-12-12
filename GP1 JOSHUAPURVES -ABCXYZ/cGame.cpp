@@ -328,6 +328,7 @@ void cGame::update(double deltaTime)
 
 		if (!play)
 		{
+			latestscore = 0;
 			score = 0;
 			theLetters.clear();
 			for (int ltr = 0; ltr < 10; ltr++)
