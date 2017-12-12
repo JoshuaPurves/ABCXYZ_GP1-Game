@@ -67,7 +67,9 @@ private:
 	int renderWidth, renderHeight;
 	int score;
 	int latestscore;
+	//sets a string
 	string ScoreAsString;
+	//sets a string
 	string NewScoreAsString;
 	bool newscoreChanged;
 	bool scoreChanged;
@@ -85,8 +87,9 @@ private:
 	SDL_Color aColour;
 	cTexture* tempTextTexture;
 	SDL_Point theAreaClicked;
-	bool fileAvailable;
+	//allows play to be true or false
 	bool play;
+	//allows latestscores to be true or false
 	bool latestscores;
 	
 };
